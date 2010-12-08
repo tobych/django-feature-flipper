@@ -6,7 +6,7 @@ Use this pluggable application to flip features of your Django site on
 and off, so you can deploy code and schema changes for upcoming
 features but hide them from your users until you're ready.
 
-This is one practice commonly used in `continuous deployment`.
+This is one practice commonly used in *continuous deployment*.
 
 The term "feature flipper" seems to have come from Flickr, as
 described in this often-cited blog post:
@@ -36,21 +36,21 @@ Continuous deployment:
 Installation
 ============
 
-#. Add the `featureflipper` directory to your Python path.
+#. Add the ``featureflipper`` directory to your Python path.
 
    This should work::
 
     pip install -e git+https://github.com/tobych/django-feature-flipper.git@master#egg=django-feature-flipper
 
-#. Add `featureflipper` to your `INSTALLED_APPS` setting.
+#. Add ``featureflipper`` to your ``INSTALLED_APPS`` setting.
 
-#. Add `featureflipper.context_processors.features` to your
-   TEMPLATE_CONTEXT_PROCESSORS setting. It doesn't matter where you
-   put it in relation to existing entries.
+#. Add ``featureflipper.context_processors.features`` to your
+   ``TEMPLATE_CONTEXT_PROCESSORS`` setting. It doesn't matter where
+   you put it in relation to existing entries.
 
-#. Add `featureflipper.middleware.FeaturesMiddleware` to your
-   MIDDLEWARE_CLASSES setting. It doesn't matter where you put it in
-   relation to existing entries.
+#. Add ``featureflipper.middleware.FeaturesMiddleware`` to your
+   ``MIDDLEWARE_CLASSES`` setting. It doesn't matter where you put it
+   in relation to existing entries.
 
 #. Run ./manage.py syncdb to create the database table.
 
@@ -66,15 +66,17 @@ What determines a feature's status
 
 A feature's status (enabled or disabled) is determined by, in order:
 
-#. The database: the value of the attribute `enabled` of the Feature
-   table. You can edit this value using the Django admin application.
+#. The database: the value of the attribute ``enabled`` of the
+   ``Feature`` table. You can edit this value using the Django admin
+   application.
 
-#. The session: if a session entry `feature_status_myfeature` exists,
-   the feature will be enabled if the value is `enabled`, and disabled
-   otherwise. The middleware will add this entry if the GET parameter
-   session_enable_myfeature is included, as explained below.
+#. The session: if a session entry ``feature_status_myfeature``
+   exists, the feature will be enabled if the value is ``enabled``,
+   and disabled otherwise. The middleware will add this entry if the
+   ``GET`` parameter ``session_enable_myfeature`` is included, as
+   explained below.
 
-#. The request: if a GET parameter `enabled_myfeature` exists, the
+#. The request: if a GET parameter ``enabled_myfeature`` exists, the
    feature will enabled for this request, as explained below.
 
 
@@ -98,22 +100,22 @@ How to use the features in templates
 ====================================
 
 The application registers itself with Django's admin app so you can
-manage the `Features`. Each feature has a `name` made up of just
+manage the ``Features``. Each feature has a ``name`` made up of just
 alphanumeric characters and hyphens that you can use in templates,
-views, URLs and elsewhere in your code. Each feature has a Boolean
-`enabled` property, which is False (disabled) by default. The app also
-adds a few custom actions to the change list to help out. Features
-also have a name and description, which aren't currently used anywhere
-but are there to help you keep track of your features.
+views, URLs and elsewhere in your code. Each feature has a boolean
+``enabled`` property, which is ``False`` (disabled) by default. The
+app also adds a few custom actions to the change list to help
+out. Features also have a name and description, which aren't currently
+used anywhere but are there to help you keep track of your features.
 
-The context processor adds `features` to the template context, which
+The context processor adds ``features`` to the template context, which
 you can use like this::
 
   {% if feature.search %}
     <form>...</form>
   {% endif %}
 
-Here, `search` is the name of the feature. If the feature referenced
+Here, ``search`` is the name of the feature. If the feature referenced
 doesn't exist, it is silently treated as disabled.
 
 To save you some typing, you can also use a new block tag::
@@ -136,7 +138,7 @@ You can also do this::
 How to use the features in views
 ================================
 
-The middleware adds `features`, a dict subclass, to each request::
+The middleware adds ``features``, a dict subclass, to each request::
 
   if request.features['search']:
 	  ...
@@ -145,10 +147,10 @@ The middleware adds `features`, a dict subclass, to each request::
 Management commands
 ===================
 
-- `features`: List the features in the database, along with their
+- ``features``: List the features in the database, along with their
   status.
 
-- `addfeature`: Quickly adds a feature to the database, setting it to
+- ``addfeature``: Quickly adds a feature to the database, setting it to
   disabled.
 
 
