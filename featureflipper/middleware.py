@@ -1,4 +1,5 @@
 from featureflipper.models import Feature
+from featureflipper.signals import feature_defaulted
 
 import re
 
@@ -16,24 +17,21 @@ class FeaturesMiddleware(object):
 
     def process_request(self, request):
 
-        if 'session_clear_features' in request.GET:
-            self.clear_features_from_session(request.session)
-
-        # 1. Collect features from the database
         features = self.features_from_database()
 
-        # 2. Collect features from the session
-        features.update(self.features_from_session(request.session))
+        if request.user.has_perm('can_flip_with_url'):
 
-        # 3. Collect features from the URL that must persist across the session
-        session_features = self.session_features_from_url(request.GET)
-        features.update(session_features)
+            if 'session_clear_features' in request.GET:
+                self.clear_features_from_session(request.session)
 
-        # 4. Add these to the session so they persist
-        for feature in session_features:
-            self.add_feature_to_session(request.session, feature)
+            features.update(self.features_from_session(request.session))
 
-        # 5. Collect features from request.GET that are just for this request
+            features_for_session = self.session_features_from_url(request.GET)
+            features.update(features_for_session)
+
+            for feature in features_for_session:
+                self.add_feature_to_session(request.session, feature)
+
         features.update(self.features_from_url(request.GET))
 
         request.features = FeatureDict(features)
@@ -41,6 +39,7 @@ class FeaturesMiddleware(object):
         return None
 
     def features_from_database(self):
+        """Provides a dictionary of feature names and True/False"""
         features = {}
         for feature in Feature.objects.all():
             features[feature.name] = feature.enabled
@@ -94,4 +93,5 @@ class FeatureDict(dict):
         if key in self:
             return dict.__getitem__(self, key)
         else:
+            feature_defaulted.send(sender=self, feature=key)
             return False

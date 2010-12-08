@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Feature(models.Model):
 
     name = models.SlugField(max_length=40, db_index=True,
@@ -21,7 +22,10 @@ class Feature(models.Model):
 
     class Meta:
         ordering = ['name']
-        
+        permissions = (
+            ("can_flip_with_url", "Can flip features using URL parameters"),
+        )
+    
     @property
     def status(self):
         return "Enabled" if self.enabled else "Disabled"

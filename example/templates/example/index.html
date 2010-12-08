@@ -8,13 +8,23 @@
 </head>
 <body>
 
+<p>
+{% if user.is_authenticated %}
+  <a href="/admin/logout/">Logout</a>
+{% else %}
+  <a href="/admin/">Login</a>
+{% endif %}
+</p>
+
 <h1>django-feature-flipper example</h1>
 
-<ul>
-{% for feature in features %}
-  <li>{{ feature }}: {{ feature.enabled|yesno:"enabled,disabled" }}</li>
-{% endfor %}
-</ul>
+<h2>Permissions</h2>
+
+{% if perms.featureflipper.can_flip_with_url %}
+    <p>You have permission to flip features using URL parameters (see below).</p>
+{% else %}
+    <p>You don't have permission to flip features using URL parameters.</p>
+{% endif %}
 
 <h2>Using request.features in views.py</h2>
 
@@ -22,16 +32,16 @@
 
 <h2>Using the 'features' context variable</h2>
 
-{% if features.search %}
-  <p>Search is enabled</p>
-{% else %}
-  <p>Search is disabled</p>
-{% endif %}
-
 {% if features.login %}
   <p>Login is enabled</p>
 {% else %}
   <p>Login is disabled</p>
+{% endif %}
+
+{% if features.search %}
+  <p>Search is enabled</p>
+{% else %}
+  <p>Search is disabled</p>
 {% endif %}
 
 {% if features.unknown %}
@@ -44,16 +54,16 @@
 
 {% load feature_tag %}
 
-{% feature search %}
-  <p>Search is enabled</p>
-{% disabled %}
-  <p>Search is disabled</p>
-{% endfeature %}
-
 {% feature login %}
   <p>Login is enabled</p>
 {% disabled %}
   <p>Login is disabled</p>
+{% endfeature %}
+
+{% feature search %}
+  <p>Search is enabled</p>
+{% disabled %}
+  <p>Search is disabled</p>
 {% endfeature %}
 
 {% feature unknown %}
