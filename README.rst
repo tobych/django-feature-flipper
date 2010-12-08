@@ -72,15 +72,15 @@ A feature's status (enabled or disabled) is determined by, in order:
 Enabling and disabling features using URLs
 ==========================================
 
-To enable a feature for the current request:
+To enable a feature for the current request::
 
     /mypage/?enabled_myfeature
 
-To enable a feature for this request and the rest of a session:
+To enable a feature for this request and the rest of a session::
 
     /mypage/?session_enabled_myfeature
 
-To clear all the features enabled in the session:
+To clear all the features enabled in the session::
 
     /mypage/?session_clear_features
 
@@ -98,7 +98,7 @@ also have a name and description, which aren't currently used anywhere
 but are there to help you keep track of your features.
 
 The context processor adds `features` to the template context, which
-you can use like this:
+you can use like this::
 
     {% if feature.search %}
 		  <form>...</form>
@@ -110,7 +110,7 @@ TREAT_NONEXISTENT_FEATURES_AS_DISABLED configuration option to False,
 Featureflipper will instead raise an exception (see above for
 details).
 
-To save you some typing, you can also use a new block tag:
+To save you some typing, you can also use a new block tag::
 
 		{% load feature_tag %}
 
@@ -118,7 +118,7 @@ To save you some typing, you can also use a new block tag:
 		  <a href="/login/">Login</a>
 		{% endfeature %}
 
-You can also do this:
+You can also do this::
 
 		{% feature login %}
 		  ... will only be output if the feature is enabled ...
@@ -130,7 +130,7 @@ You can also do this:
 How to use the flippers in views
 ================================
 
-The middleware adds a `features` dictionary-like object to each request:
+The middleware adds a `features` dictionary-like object to each request::
 
    if request.features['search']:
 	   ...
