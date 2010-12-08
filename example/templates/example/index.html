@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Django Feature-Flipper Example</title>
+</head>
+<body>
+
+<h1>Django Feature-Flipper Example</h1>
+
+<h2>Status</h2>
+
+<ul>
+<li>Search: {{ feature.search|yesno:"Enabled,Disabled" }}</li>
+<li>Login: {{ feature.login|yesno:"Enabled,Disabled" }}</li>
+<li>Unknown: {{ feature.unknown|yesno:"Enabled,Disabled" }}</li>
+</ul>
+
+<h2>View</h2>
+
+<p>{{ message }}</p>
+
+<h2>Using 'feature' context variable</h2>
+
+{% if feature.search %}
+  <p>Search is enabled</p>
+{% else %}
+  <p>Search is disabled</p>
+{% endif %}
+
+{% if feature.search %}
+  <p>Search is still enabled</p>
+{% endif %}
+
+{% if feature.login %}
+  <p>Login is enabled</p>
+{% else %}
+  <p>Login is disabled</p>
+{% endif %}
+
+{% if feature.unknown %}
+  <p>Unknown is enabled</p>
+{% else %}
+  <p>Unknown is disabled</p>
+{% endif %}
+
+<h3>Using the 'feature' tag</h3>
+
+{% load feature_tag %}
+
+{% feature search %}
+  <p>Search is enabled</p>
+{% endfeature %}
+
+{% feature login %}
+  <p>Login is enabled</p>
+{% disabled %}
+  <p>Login is disabled</p>
+{% endfeature %}
+
+{% feature unknown %}
+  <p>Unknown is enabled</p>
+{% disabled %}
+  <p>Unknown is disabled</p>
+{% endfeature %}
+
+<h3>Using GET parameters</h3>
+
+<ul>
+<li><a href=".">No GET parameters</a></li>
+<li><a href="./?enable_search">/?enable_search</a></li>
+<li><a href="./?session_enable_search">/?session_enable_search</a></li>
+<li><a href="./?session_clear_features">/?session_clear_features</a></li>
+</ul>
+
+</body>
+</html>
