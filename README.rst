@@ -74,15 +74,15 @@ Enabling and disabling features using URLs
 
 To enable a feature for the current request::
 
-    /mypage/?enabled_myfeature
+  /mypage/?enabled_myfeature
 
 To enable a feature for this request and the rest of a session::
 
-    /mypage/?session_enabled_myfeature
+  /mypage/?session_enabled_myfeature
 
 To clear all the features enabled in the session::
 
-    /mypage/?session_clear_features
+  /mypage/?session_clear_features
 
 
 How to use the flippers in templates
@@ -112,19 +112,19 @@ details).
 
 To save you some typing, you can also use a new block tag::
 
-		{% load feature_tag %}
+  {% load feature_tag %}
 
-		{% feature login %}
-		  <a href="/login/">Login</a>
-		{% endfeature %}
+  {% feature login %}
+    <a href="/login/">Login</a>
+  {% endfeature %}
 
 You can also do this::
 
-		{% feature login %}
-		  ... will only be output if the feature is enabled ...
-    {% disabled %}
-		  ... will only be output if the feature is disabled ...
-		{% endfeature %}
+  {% feature login %}
+    ... will only be output if the feature is enabled ...
+  {% disabled %}
+    ... will only be output if the feature is disabled ...
+  {% endfeature %}
 
 
 How to use the flippers in views
@@ -132,8 +132,8 @@ How to use the flippers in views
 
 The middleware adds a `features` dictionary-like object to each request::
 
-   if request.features['search']:
-	   ...
+  if request.features['search']:
+	  ...
 
 
 Good practice
