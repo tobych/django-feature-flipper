@@ -28,4 +28,4 @@ class Feature(models.Model):
     
     @property
     def status(self):
-        return "Enabled" if self.enabled else "Disabled"
+        return "enabled" if self.enabled else "disabled"
