@@ -105,10 +105,7 @@ you can use like this::
   {% endif %}
 
 Here, `search` is the name of the feature. If the feature referenced
-doesn't exist, it's treated as disabled. If you set the
-TREAT_NONEXISTENT_FEATURES_AS_DISABLED configuration option to False,
-Featureflipper will instead raise an exception (see above for
-details).
+doesn't exist, it is silently treated as disabled.
 
 To save you some typing, you can also use a new block tag::
 
