@@ -2,13 +2,14 @@
 Django Feature Flipper
 ======================
 
-Use this pluggable app to flip features of your Django site on and
-off, so you can deploy the necessary code and schema changes without
-enabling the feature for all your users yet.
+Use this pluggable application to flip features of your Django site on
+and off, so you can deploy code and schema changes for upcoming
+features but hide them from your users until you're ready.
 
-This is one practice commonly used in `continuous deployment`. The
-term "feature flipper" seems to have come from Flickr, as described in
-this often-cited blog post:
+This is one practice commonly used in `continuous deployment`.
+
+The term "feature flipper" seems to have come from Flickr, as
+described in this often-cited blog post:
 
 http://code.flickr.com/blog/2009/12/02/flipping-out/
 
@@ -47,7 +48,7 @@ Installation
 Limitations
 ===========
 
-The app currently keeps feature status in the database. This is
+Feature status is currently kept in the database. This is
 inefficient. They should probably be in Memcached instead.
 
 
@@ -71,13 +72,11 @@ A feature's status (enabled or disabled) is determined by, in order:
 Enabling and disabling features using URLs
 ==========================================
 
-To enable a feature for the current request, include a GET parameter
-enabled_<slug>, like this:
+To enable a feature for the current request:
 
     /mypage/?enabled_myfeature
 
-To enable a feature for this request and the rest of a session,
-include a GET parameter session_enabled_<slug>, like this:
+To enable a feature for this request and the rest of a session:
 
     /mypage/?session_enabled_myfeature
 
@@ -89,15 +88,14 @@ To clear all the features enabled in the session:
 How to use the flippers in templates
 ====================================
 
-The app registers itself with Django's admin application, so you can
-manage the `Features`. Each feature must have a `slug`, a brief name
-made up of just alphanumeric characters and hyphens (not yet enforced)
-that you can use in templates, views, URLs and elsewhere in your
-code. Each feature has a Boolean `enabled` property, which is False
-(disabled) by default. The app also adds a few custom actions to the
-change list to help out. Features also have a name and description,
-which aren't currently used anywhere but are there to help you keep
-track of your features.
+The application registers itself with Django's admin app so you can
+manage the `Features`. Each feature has a `name` made up of just
+alphanumeric characters and hyphens that you can use in templates,
+views, URLs and elsewhere in your code. Each feature has a Boolean
+`enabled` property, which is False (disabled) by default. The app also
+adds a few custom actions to the change list to help out. Features
+also have a name and description, which aren't currently used anywhere
+but are there to help you keep track of your features.
 
 The context processor adds `features` to the template context, which
 you can use like this:
@@ -106,10 +104,11 @@ you can use like this:
 		  <form>...</form>
 		{% endif %}
 
-Here, `search` is the `slug` of the feature. If the feature referenced
+Here, `search` is the name of the feature. If the feature referenced
 doesn't exist, it's treated as disabled. If you set the
 TREAT_NONEXISTENT_FEATURES_AS_DISABLED configuration option to False,
-Featureflipper will instead raise an exception (see above for details).
+Featureflipper will instead raise an exception (see above for
+details).
 
 To save you some typing, you can also use a new block tag:
 
