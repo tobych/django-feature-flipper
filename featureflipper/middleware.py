@@ -5,72 +5,93 @@ import re
 
 class FeaturesMiddleware(object):
 
-    # This stuff should only be enabled with certain permissions
+    # Matches per-request flipper in URL
+    _REQUEST_ENABLE = re.compile("^enable_(?P<feature>[a-zA-Z_]+)$")
 
-    # I think all this should be good at *disabling* stuff too, as removing stuff
-    # from UI is so important so often. So let's allow the turtle to be disabled.
-    # {% feature turtle enabled %}<img ...>{% endfeature %}
-    # Now, we certainly need to clearly define the precedence. That 'enabled' will
-    # override the usual default of 'disabled'.
-    # We should also easily be able to override whatever's in the database in settings.py,
-    # eg for the dev environment so we don't have to piss about with the database just to
-    # get a feature showing.
+    # Matches per-session flipper in URL
+    _SESSION_ENABLE = re.compile("^session_enable_(?P<feature>[a-zA-Z_]+)$")
+
+    # Mathes flipper we put in the session
+    _FEATURE_STATUS = re.compile("^feature_status_(?P<feature>[a-zA-Z_]+)$")
 
     def process_request(self, request):
 
-        request.feature = FeatureDict()
-
-        feature_status = re.compile("^feature_status_(?P<feature>[a-zA-Z_]+)$")
         if 'session_clear_features' in request.GET:
-            for key in request.session.keys():
-                m = re.match(feature_status, key)
-                if m:
-                    del request.session[key]
-                    print "deleted %s" % key
-        else:
-            for key in request.session.keys():
-                m = re.match(feature_status, key)
-                if m:
-                    feature = m.groupdict()['feature']
-                    if request.session[key] == 'enabled':
-                        request.feature[feature] = True
-                    else: # We'll assume it's disabled
-                        request.feature[feature] = False
-                
-        enable = re.compile("^enable_(?P<feature>[a-zA-Z_]+)$")
-        session_enable = re.compile("^session_enable_(?P<feature>[a-zA-Z_]+)$")
-        for parameter in request.GET:
+            self.clear_features_from_session(request.session)
 
-            m = re.match(enable, parameter)
-            if m:
-                feature = m.groupdict()['feature']
-                request.feature[feature] = True
-                continue
+        # 1. Collect features from the database
+        features = self.features_from_database()
 
-            m = re.match(session_enable, parameter)
-            if m:
-                feature = m.groupdict()['feature']
-                request.feature[feature] = True
-                request.session["feature_status_" + feature] = 'enabled'
+        # 2. Collect features from the session
+        features.update(self.features_from_session(request.session))
+
+        # 3. Collect features from the URL that must persist across the session
+        session_features = self.session_features_from_url(request.GET)
+        features.update(session_features)
+
+        # 4. Add these to the session so they persist
+        for feature in session_features:
+            self.add_feature_to_session(request.session, feature)
+
+        # 5. Collect features from request.GET that are just for this request
+        features.update(self.features_from_url(request.GET))
+
+        request.features = FeatureDict(features)
 
         return None
 
-class FeatureDict():
+    def features_from_database(self):
+        features = {}
+        for feature in Feature.objects.all():
+            features[feature.name] = feature.enabled
+        return features
 
-    def __init__(self):
-        self._cache = {}
+    def features_from_session(self, session):
+        """Provides a dictionary of feature names and True/False"""
+        features = {}
+        for key in session.keys():
+            m = re.match(self._FEATURE_STATUS, key)
+            if m:
+                feature = m.groupdict()['feature']
+                if session[key] == 'enabled':
+                    features[feature] = True
+                else: # We'll assume it's disabled
+                    features[feature] = False
+        return features
+
+    def features_from_url(self, get):
+        """Provides a dictionary of feature names and True/False"""
+        features = {}
+        for parameter in get:
+            m = re.match(self._REQUEST_ENABLE, parameter)
+            if m:
+                feature = m.groupdict()['feature']
+                features[feature] = True
+        return features
+
+    def session_features_from_url(self, get):
+        """Provides a dictionary of feature names and True/False"""
+        features = {}
+        for parameter in get:
+            m = re.match(self._SESSION_ENABLE, parameter)
+            if m:
+                feature = m.groupdict()['feature']
+                features[feature] = True
+        return features
+
+    def add_feature_to_session(self, session, feature):
+        session["feature_status_" + feature] = 'enabled'
+
+    def clear_features_from_session(self, session):
+        for key in session.keys():
+            if re.match(self._FEATURE_STATUS, key):
+                del session[key]
+
+
+class FeatureDict(dict):
 
     def __getitem__(self, key):
-        if key in self._cache:
-            enabled = self._cache[key]
+        if key in self:
+            return dict.__getitem__(self, key)
         else:
-            try:
-                feature = Feature.objects.get(name=key)
-                enabled = feature.enabled
-                self._cache[key] = enabled
-            except Feature.DoesNotExist:
-                enabled = False
-        return enabled
-
-    def __setitem__(self, key, value):
-        self._cache[key] = value
+            return False

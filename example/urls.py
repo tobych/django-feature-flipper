@@ -9,8 +9,3 @@ urlpatterns = patterns('',
     (r'^$', 'example.views.index')
    
 )
-
-urlpatterns = urlpatterns + patterns('',
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': settings.MEDIA_ROOT}),
-    ) if settings.DEBUG else urlpatterson

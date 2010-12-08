@@ -40,9 +40,15 @@ Installation
 
 #. Add `featureflipper` to your `INSTALLED_APPS` setting.
 
-#. Add `featureflipper.context_processors.features` to your TEMPLATE_CONTEXT_PROCESSORS setting.
+#. Add `featureflipper.context_processors.features` to your
+   TEMPLATE_CONTEXT_PROCESSORS setting. It doesn't matter where you
+   put it in relation to existing entries.
 
-#. Add `featureflipper.middleware.FeaturesMiddleware` to your MIDDLEWARE_CLASSES setting.
+#. Add `featureflipper.middleware.FeaturesMiddleware` to your
+   MIDDLEWARE_CLASSES setting. It doesn't matter where you put it in
+   relation to existing entries.
+
+#. Run ./manage.py syncdb to create the database table.
 
 
 Limitations
@@ -78,7 +84,7 @@ To enable a feature for the current request::
 
 To enable a feature for this request and the rest of a session::
 
-  /mypage/?session_enabled_myfeature
+  /mypage/?session_enable_myfeature
 
 To clear all the features enabled in the session::
 

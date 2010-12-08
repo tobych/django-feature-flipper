@@ -6,10 +6,9 @@ from featureflipper.models import Feature
 
 def index(request):
 
-    if request.feature['search']:
-        message = "Search is ENABLED"
-    else:
-        message = "Search is DISABLED"
+    message = "search=%s, login=%s, unknown=%s" % \
+        (request.features['search'], request.features['login'],
+         request.features['unknown'])
 
     return render_to_response('index.html', {'message': message},
         context_instance=RequestContext(request))
