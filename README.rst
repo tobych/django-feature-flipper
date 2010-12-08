@@ -100,9 +100,9 @@ but are there to help you keep track of your features.
 The context processor adds `features` to the template context, which
 you can use like this::
 
-    {% if feature.search %}
-		  <form>...</form>
-		{% endif %}
+  {% if feature.search %}
+    <form>...</form>
+  {% endif %}
 
 Here, `search` is the name of the feature. If the feature referenced
 doesn't exist, it's treated as disabled. If you set the
