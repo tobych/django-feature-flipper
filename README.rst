@@ -85,7 +85,7 @@ To clear all the features enabled in the session::
   /mypage/?session_clear_features
 
 
-How to use the flippers in templates
+How to use the features in templates
 ====================================
 
 The application registers itself with Django's admin app so you can
@@ -124,7 +124,7 @@ You can also do this::
   {% endfeature %}
 
 
-How to use the flippers in views
+How to use the features in views
 ================================
 
 The middleware adds a `features` dictionary-like object to each request::
