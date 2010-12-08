@@ -136,7 +136,7 @@ You can also do this::
 How to use the features in views
 ================================
 
-The middleware adds a `features` dictionary-like object to each request::
+The middleware adds `features`, a dict subclass, to each request::
 
   if request.features['search']:
 	  ...
