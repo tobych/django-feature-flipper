@@ -52,7 +52,7 @@ Installation
    ``MIDDLEWARE_CLASSES`` setting. It doesn't matter where you put it
    in relation to existing entries.
 
-#. Run ./manage.py syncdb to create the database table.
+#. Run ``./manage.py syncdb`` to create the database table.
 
 Limitations
 ===========
@@ -141,17 +141,17 @@ How to use the features in views
 The middleware adds ``features``, a dict subclass, to each request::
 
   if request.features['search']:
-	  ...
+	 ...
 
 
 Management commands
 ===================
 
-- ``features``: List the features in the database, along with their
-  status.
+- ``./manage.py features``: List the features in the database, along
+  with their status.
 
-- ``addfeature``: Quickly adds a feature to the database, setting it to
-  disabled.
+- ``./manage.py addfeature``: Adds a feature to the database, setting
+  it to disabled.
 
 
 Good practice
