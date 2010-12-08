@@ -158,4 +158,4 @@ Good practice
 TODOs and BUGS
 ==============
 
-See: http://github.com/tobych/django-featureflipper/issues
+See: https://github.com/tobych/django-feature-flipper/issues
