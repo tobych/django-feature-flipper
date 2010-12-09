@@ -17,7 +17,7 @@ class FeaturesMiddleware(object):
 
     def process_request(self, request):
 
-        features = self.features_from_database()
+        features = dict(self.features_from_database())
 
         if request.user.has_perm('can_flip_with_url'):
 
@@ -26,7 +26,7 @@ class FeaturesMiddleware(object):
 
             features.update(self.features_from_session(request.session))
 
-            features_for_session = self.session_features_from_url(request.GET)
+            features_for_session = dict(self.session_features_from_url(request.GET))
             features.update(features_for_session)
 
             for feature in features_for_session:
@@ -39,44 +39,34 @@ class FeaturesMiddleware(object):
         return None
 
     def features_from_database(self):
-        """Provides a dictionary of feature names and True/False"""
-        features = {}
+        """Provides an iterator yielding tuples (feature name, True/False)"""
         for feature in Feature.objects.all():
-            features[feature.name] = feature.enabled
-        return features
+            yield (feature.name, feature.enabled)
 
     def features_from_session(self, session):
-        """Provides a dictionary of feature names and True/False"""
-        features = {}
+        """Provides an iterator yielding tuples (feature name, True/False)"""
         for key in session.keys():
             m = re.match(self._FEATURE_STATUS, key)
             if m:
                 feature = m.groupdict()['feature']
                 if session[key] == 'enabled':
-                    features[feature] = True
+                    yield (feature, True)
                 else: # We'll assume it's disabled
-                    features[feature] = False
-        return features
+                    yield (feature, False)
 
     def features_from_url(self, get):
-        """Provides a dictionary of feature names and True/False"""
-        features = {}
+        """Provides an iterator yielding tuples (feature name, True/False)"""
         for parameter in get:
             m = re.match(self._REQUEST_ENABLE, parameter)
             if m:
-                feature = m.groupdict()['feature']
-                features[feature] = True
-        return features
+                yield (m.groupdict()['feature'], True)
 
     def session_features_from_url(self, get):
-        """Provides a dictionary of feature names and True/False"""
-        features = {}
+        """Provides an iterator yielding tuples (feature name, True/False)"""
         for parameter in get:
             m = re.match(self._SESSION_ENABLE, parameter)
             if m:
-                feature = m.groupdict()['feature']
-                features[feature] = True
-        return features
+                yield (m.groupdict()['feature'], True)
 
     def add_feature_to_session(self, session, feature):
         session["feature_status_" + feature] = 'enabled'
