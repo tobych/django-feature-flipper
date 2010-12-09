@@ -1,0 +1,12 @@
+[
+  {
+    "name": "login",
+    "enabled": true,
+    "description": "Includes showing the login link at the top of each page."
+  },
+  {
+    "name": "search",
+    "enabled": true,
+    "description": "Shows the search box on most pages, and the larger one on the home page."
+  }
+]

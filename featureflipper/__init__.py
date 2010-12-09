@@ -1,6 +1,7 @@
 """
 django-feature-flipper
 """
+
 __version_info__ = {
     'major': 0,
     'minor': 1,

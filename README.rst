@@ -52,13 +52,20 @@ Installation
    ``MIDDLEWARE_CLASSES`` setting. It doesn't matter where you put it
    in relation to existing entries.
 
+#. Optionally, add a settings.FEATURES_FILE, and set it to the
+   location of a features file (see below) to load after each syncdb
+   (or whenever you'd normally expect fixtures to be loaded).
+
 #. Run ``./manage.py syncdb`` to create the database table.
+
 
 Limitations
 ===========
 
 Feature status is currently kept in the database. This is
 inefficient. They should probably be in Memcached instead.
+
+There is, unforgivably, poor unit test coverage.
 
 
 What determines a feature's status
@@ -144,14 +151,43 @@ The middleware adds ``features``, a dict subclass, to each request::
 	 ...
 
 
+Features file
+=============
+
+To make sure you can easily keep features and their default settings
+under version control, you can load features from a file using the
+``loadfeatures`` management command (below). If you add FEATURES_FILE
+to your settings, pointing to a file (typically features.json),
+features from this file will be loaded each time you do a syncdb. Note
+that any existing feature of the same name will be overwritten.
+
+The file needs to look like this::
+
+	[
+		{
+			"name": "login",
+			"enabled": true,
+			"description": "Includes showing the login link at the top of each page."
+		},
+		{
+			"name": "search",
+			"enabled": true,
+			"description": "Shows the search box on most pages, and the larger one on the home page."
+		}
+	]
+
+
 Management commands
 ===================
 
 - ``./manage.py features``: List the features in the database, along
   with their status.
 
-- ``./manage.py addfeature``: Adds a feature to the database, setting
-  it to disabled.
+- ``./manage.py addfeature``: Adds one or more features to the
+  database (leaving them disabled).
+
+- ``./manage.py loadfeatures``: Loads features from a file, or from
+  the features file defined in settings.FEATURES_FILE.
 
 
 Good practice
@@ -165,7 +201,7 @@ Good practice
   you later decide to resurect the feature, it'll always be there in
   your version control repository.
 
-- Don't query feature states in the models. Keep everything in the
+- Don't query feature states in your models. Keep everything in the
   templates and views. Your model needs to support both the enabled
   and disabled state of the feature. That's the point. You do the code
   push and any database migration, then control access to the feature

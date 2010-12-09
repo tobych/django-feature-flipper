@@ -1,0 +1,12 @@
+[
+  {
+    "name": "login",
+    "enabled": true,
+    "description": "Login link"
+  },
+  {
+    "name": "search",
+    "enabled": false,
+    "description": "Search box"
+  }
+]

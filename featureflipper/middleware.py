@@ -76,7 +76,6 @@ class FeaturesMiddleware(object):
             if re.match(self._FEATURE_STATUS, key):
                 del session[key]
 
-
 class FeatureDict(dict):
 
     def __getitem__(self, key):

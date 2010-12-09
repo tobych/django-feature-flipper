@@ -1,13 +1,18 @@
 from django.core.management.base import BaseCommand
-from django.core.management import call_command
 
 from featureflipper.models import Feature
 
 
 class Command(BaseCommand):
-    args = ''
-    help = 'Adds the named feature to the database, as disabled'
+    args = '[feature ...]'
+    help = 'Adds the named features to the database, as disabled.'
 
-    def handle(self, name, *args, **options):
-        Feature.objects.create(name=name, enabled=False)
-        print "Added feature %s" % name
+    def handle(self, *features, **options):
+        for name in features:
+            try:
+                feature = Feature.objects.get(name=name)
+            except Feature.DoesNotExist:
+                Feature.objects.create(name=name, enabled=False)
+                print "Added feature %s" % name
+            else:
+                print "Feature %s already exists, and is %s" % (feature.name, feature.status)

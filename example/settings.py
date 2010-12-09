@@ -82,6 +82,8 @@ TEMPLATE_DIRS = (
     os.path.abspath(os.path.dirname(__file__)) + "/templates/example/",
 )
 
+FEATURES_FILE = os.path.abspath(os.path.dirname(__file__)) + "/features.json"
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
