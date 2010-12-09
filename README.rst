@@ -186,8 +186,12 @@ Management commands
 - ``./manage.py addfeature``: Adds one or more features to the
   database (leaving them disabled).
 
-- ``./manage.py loadfeatures``: Loads features from a file, or from
-  the features file defined in settings.FEATURES_FILE.
+- ``./manage.py loadfeatures``: Loads features from a JSON file (as
+  above), or from the features file defined in settings.FEATURES_FILE.
+
+- ``./manage.py dumpfeatures``: Outputs features from the database in
+  the same JSON format (although the keys aren't in the same order as the
+  example above).
 
 
 Good practice
