@@ -177,18 +177,18 @@ that any existing feature of the same name will be overwritten.
 
 The file needs to look like this::
 
-	[
-		{
-			"name": "profile",
-			"enabled": true,
-			"description": "Allow the user to view and edit their profile."
-		},
-		{
-			"name": "search",
-			"enabled": true,
-			"description": "Shows the search box on most pages, and the larger one on the home page."
-		}
-	]
+  [
+    {
+      "name": "profile",
+      "enabled": true,
+      "description": "Allow the user to view and edit their profile."
+    },
+    {
+      "name": "search",
+      "enabled": true,
+      "description": "Shows the search box on most pages, and the larger one on the home page."
+    }
+  ]
 
 Note that for ``profile`` above, we're using the ``description`` field
 to describe the feature in general, whereas for ``search`` we're
