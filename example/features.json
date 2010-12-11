@@ -1,12 +1,12 @@
 [
   {
-    "name": "login",
+    "name": "profile",
     "enabled": true,
-    "description": "Includes showing the login link at the top of each page."
+    "description": "Allow the user to view and edit their profile."
   },
   {
     "name": "search",
-    "enabled": true,
+    "enabled": false,
     "description": "Shows the search box on most pages, and the larger one on the home page."
   }
 ]

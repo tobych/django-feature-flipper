@@ -90,6 +90,9 @@ A feature's status (enabled or disabled) is determined by, in order:
 Enabling and disabling features using URLs
 ==========================================
 
+Users with permission ``can_flip_with_url`` can turn features on and
+off using URL parameters.
+
 To enable a feature for the current request::
 
   /mypage/?enabled_myfeature
@@ -102,6 +105,15 @@ To clear all the features enabled in the session::
 
   /mypage/?session_clear_features
 
+If you want to allow anonymous users to do this, see the section
+"Authorization for Anonymous Users" here:
+
+http://docs.djangoproject.com/en/dev/topics/auth/
+
+Alternatively (since that looks painful) you can allow anyone to use
+URLs to flip features by setting
+FEATURE_FLIPPER_ANONYMOUS_URL_FLIPPING to True in your settings.py.
+
 
 How to use the features in templates
 ====================================
@@ -111,9 +123,11 @@ manage the ``Features``. Each feature has a ``name`` made up of just
 alphanumeric characters and hyphens that you can use in templates,
 views, URLs and elsewhere in your code. Each feature has a boolean
 ``enabled`` property, which is ``False`` (disabled) by default. The
-app also adds a few custom actions to the change list to help
-out. Features also have a name and description, which aren't currently
-used anywhere but are there to help you keep track of your features.
+app also adds a few custom actions to the change list page so you can
+enable, disable and flip features there.
+
+Features also have a name and description, which aren't currently used
+anywhere but should help you keep track.
 
 The context processor adds ``features`` to the template context, which
 you can use like this::
@@ -135,8 +149,8 @@ To save you some typing, you can also use a new block tag::
 
 You can also do this::
 
-  {% feature login %}
-    ... will only be output if the feature is enabled ...
+  {% feature profile %}
+    ... will only be output if feature 'profile' is enabled ...
   {% disabled %}
     ... will only be output if the feature is disabled ...
   {% endfeature %}
@@ -165,9 +179,9 @@ The file needs to look like this::
 
 	[
 		{
-			"name": "login",
+			"name": "profile",
 			"enabled": true,
-			"description": "Includes showing the login link at the top of each page."
+			"description": "Allow the user to view and edit their profile."
 		},
 		{
 			"name": "search",
@@ -175,6 +189,11 @@ The file needs to look like this::
 			"description": "Shows the search box on most pages, and the larger one on the home page."
 		}
 	]
+
+Note that for ``profile`` above, we're using the ``description`` field
+to describe the feature in general, whereas for ``search`` we're
+describing how and where that feature is make visible to the user. You
+might end up using a mix of these.
 
 
 Management commands
@@ -193,6 +212,54 @@ Management commands
   the same JSON format (although the keys aren't in the same order as the
   example above).
 
+- ``./manage.py enablefeature``: Enables the named feature(s).
+
+- ``./manage.py disablefeature``: Disables the named feature(s).
+
+
+Signals
+=======
+
+Signal featureflipper.signals.feature_defaulted is sent when a feature
+referred to in a template or view is being defaulted to disabled. This
+will happen if the feature is not in the database, and hasn't been
+enabled using URL parameters.
+
+The example project shows how this signal can be used, in ``views.py``.
+
+Note also that featureflipper uses Django's ``post_syncdb`` to load a
+features file when ``syncdb`` is run. The connection to the signal is
+made in ``featureflipper/management/__init.py__``.
+
+
+Using the example project included in the source
+================================================
+
+The source tree for django-feature-flipper includes an example project
+created using the "App Factory" described on a post_ on the Washington
+Times open source blog.
+
+.. _post: http://opensource.washingtontimes.com/blog/2010/nov/28/app-centric-django-development-part-2-app-factory/
+
+The settings.py file stipulates a sqlite3 database, so you'll need
+sqlite3 to be installed on your system. The database will be created
+automatically as necessary.
+
+To try the example project::
+
+ cd example
+ ./manage.py syncdb
+ ./manage.py runserver
+
+Let syncdb help you create a superuser so you can use the admin to
+create your own features. If you forget this step you can always run
+the ``createsuperuser`` command to do this. Two features (``profile``
+and ``search``) will be loaded from ``features.json`` when you do the
+``syncdb``. These are referenced in the example template used on the
+home page. There's no link bank to the home page from the admin so
+you'll need to hack the URL or open the admin in a separate tab in
+your browser.
+
 
 Good practice
 =============
@@ -204,16 +271,6 @@ Good practice
   don't leave unused template and view code around. Just delete it. If
   you later decide to resurect the feature, it'll always be there in
   your version control repository.
-
-- Don't query feature states in your models. Keep everything in the
-  templates and views. Your model needs to support both the enabled
-  and disabled state of the feature. That's the point. You do the code
-  push and any database migration, then control access to the feature
-  in the view. For example, if you're changing your user profiles to
-  allow several phone numbers rather than just the one, the model
-  should allow multiple phone numbers. Users just won't be able to add
-  (or see) those other phone numbers unless the feature is enabled for
-  them.
 
 
 TODOs and BUGS

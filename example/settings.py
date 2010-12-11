@@ -82,7 +82,8 @@ TEMPLATE_DIRS = (
     os.path.abspath(os.path.dirname(__file__)) + "/templates/example/",
 )
 
-FEATURES_FILE = os.path.abspath(os.path.dirname(__file__)) + "/features.json"
+FEATURE_FLIPPER_FEATURES_FILE = os.path.abspath(os.path.dirname(__file__)) + "/features.json"
+FEATURE_FLIPPER_ANONYMOUS_URL_FLIPPING = False
 
 INSTALLED_APPS = (
     'django.contrib.admin',

@@ -1,40 +1,37 @@
+from django.conf import settings
+
 from featureflipper.models import Feature
 from featureflipper.signals import feature_defaulted
 
 import re
 
+# Per-request flipper in URL
+_REQUEST_ENABLE = re.compile("^enable_(?P<feature>\w+)$")
+
+# Per-session flipper in URL
+_SESSION_ENABLE = re.compile("^session_enable_(?P<feature>\w+)$")
+
+# Flipper we put in the session
+_FEATURE_STATUS = re.compile("^feature_status_(?P<feature>\w+)$")
 
 class FeaturesMiddleware(object):
 
-    # Matches per-request flipper in URL
-    _REQUEST_ENABLE = re.compile("^enable_(?P<feature>[a-zA-Z_]+)$")
-
-    # Matches per-session flipper in URL
-    _SESSION_ENABLE = re.compile("^session_enable_(?P<feature>[a-zA-Z_]+)$")
-
-    # Mathes flipper we put in the session
-    _FEATURE_STATUS = re.compile("^feature_status_(?P<feature>[a-zA-Z_]+)$")
-
     def process_request(self, request):
+        panel = FeaturesPanel()
+        panel.add('database', list(self.features_from_database()))
 
-        features = dict(self.features_from_database())
-
-        if request.user.has_perm('can_flip_with_url'):
-
+        if getattr(settings, 'FEATURE_FLIPPER_ANONYMOUS_URL_FLIPPING', False) or \
+                request.user.has_perm('can_flip_with_url'):
             if 'session_clear_features' in request.GET:
                 self.clear_features_from_session(request.session)
-
-            features.update(self.features_from_session(request.session))
-
-            features_for_session = dict(self.session_features_from_url(request.GET))
-            features.update(features_for_session)
-
-            for feature in features_for_session:
+            for feature in dict(self.session_features_from_url(request.GET)):
                 self.add_feature_to_session(request.session, feature)
 
-        features.update(self.features_from_url(request.GET))
+        panel.add('session', list(self.features_from_session(request.session)))
+        panel.add('url', list(self.features_from_url(request.GET)))
 
-        request.features = FeatureDict(features)
+        request.features = FeatureDict(panel.states())
+        request.features_panel = panel
 
         return None
 
@@ -46,7 +43,7 @@ class FeaturesMiddleware(object):
     def features_from_session(self, session):
         """Provides an iterator yielding tuples (feature name, True/False)"""
         for key in session.keys():
-            m = re.match(self._FEATURE_STATUS, key)
+            m = re.match(_FEATURE_STATUS, key)
             if m:
                 feature = m.groupdict()['feature']
                 if session[key] == 'enabled':
@@ -57,23 +54,24 @@ class FeaturesMiddleware(object):
     def features_from_url(self, get):
         """Provides an iterator yielding tuples (feature name, True/False)"""
         for parameter in get:
-            m = re.match(self._REQUEST_ENABLE, parameter)
+            m = re.match(_REQUEST_ENABLE, parameter)
             if m:
                 yield (m.groupdict()['feature'], True)
 
     def session_features_from_url(self, get):
         """Provides an iterator yielding tuples (feature name, True/False)"""
         for parameter in get:
-            m = re.match(self._SESSION_ENABLE, parameter)
+            m = re.match(_SESSION_ENABLE, parameter)
             if m:
-                yield (m.groupdict()['feature'], True)
+                feature = m.groupdict()['feature']
+                yield (feature, True)
 
     def add_feature_to_session(self, session, feature):
         session["feature_status_" + feature] = 'enabled'
 
     def clear_features_from_session(self, session):
         for key in session.keys():
-            if re.match(self._FEATURE_STATUS, key):
+            if re.match(_FEATURE_STATUS, key):
                 del session[key]
 
 class FeatureDict(dict):
@@ -84,3 +82,24 @@ class FeatureDict(dict):
         else:
             feature_defaulted.send(sender=self, feature=key)
             return False
+
+class FeaturesPanel():
+
+    def __init__(self):
+        self._features = {}
+        self._sources = []
+
+    def add(self, source, features):
+        self._sources.append((source, features))
+        for (feature, enabled) in features:
+            self._features[feature] = {'enabled': enabled, 'source': source}
+
+    def enabled(self, name):
+        return self._features[name]['enabled']
+
+    def source(self, name):
+        return self._features[name]['source']
+
+    def states(self):
+        # Returns a dictionary, mapping each feature name to its (final) state.
+        return dict([(x, y['enabled']) for x, y in self._features.items()])

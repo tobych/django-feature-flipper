@@ -4,16 +4,17 @@ from django.conf import settings
 
 from featureflipper.models import Feature
 
+import os
 
 class Command(BaseCommand):
 
     def handle(self, file='', *args, **options):
         help = 'Loads the features from the file, or the default if none is provided.'
         if file == '':
-            try:
-                file = settings.FEATURES_FILE
-            except AttributeError:
-                print "settings.FEATURES_FILE is not set."
+            if hasattr(settings, 'FEATURE_FLIPPER_FEATURES_FILE'):
+                file = settings.FEATURE_FLIPPER_FEATURES_FILE
+            else:
+                print "settings.FEATURE_FLIPPER_FEATURES_FILE is not set."
                 return
 
         verbosity = int(options.get('verbosity', 1))
@@ -33,4 +34,4 @@ class Command(BaseCommand):
             feature.save()
 
         if verbosity > 0:
-            print "Loaded %d features from %s" % (len(features), file)
+            print "Loaded %d features." % len(features)
