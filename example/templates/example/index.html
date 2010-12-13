@@ -10,7 +10,7 @@
 
 <p>
 {% if user.is_authenticated %}
-  <a href="/admin/logout/">Logout</a>
+  <strong>{{ user }}</strong> <a href="/admin/logout/">Logout</a>
 {% else %}
   <a href="/admin/">Login</a>
 {% endif %}

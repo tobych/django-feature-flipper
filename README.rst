@@ -164,6 +164,22 @@ The middleware adds ``features``, a dict subclass, to each request::
   if request.features['search']:
 	 ...
 
+The middleware also adds ``features_panel`` to the request. This
+object provides more information about the state of each feature than
+``features``.
+
+``enabled('myfeature')`` returns True if myfeature is enabled.
+
+``source('myfeature')`` returns a string indicating the source of the
+final status of the feature:
+
+- ``site``: site-wide, in the Feature instance itself
+- ``session``: in the session, set using a URL parameter
+- ``url``: per request, set using a URL parameter
+
+``source('myfeature)`` will return another value if a featureflipper
+plugin is being used (see below).
+
 
 Features file
 =============
@@ -271,6 +287,33 @@ Good practice
   don't leave unused template and view code around. Just delete it. If
   you later decide to resurect the feature, it'll always be there in
   your version control repository.
+
+
+Extending Feature Flipper
+=========================
+
+The app includes a hook to allow you to add "feature providers" that
+provide the state of features. On each request, the feature states are
+collected in turn from any plugins found (the order they're called on
+is undefined), just after feature states are collected from the
+database. To add a plugin, you need to create a subclass of
+featureflipper.FeatureProvider, and make sure it gets compiled along
+with the rest of your application.
+
+The class attribute ``source`` must be a string. This string is what
+the middeware makes available in request.features_panel.source().
+
+The static method ``features`` must return a (possibly empty) list of
+tuples. The first member is the name of the feature, and the second
+True if the feature is enabled, and False otherwise. The features
+returned need not be defined in a Feature instance in the database.
+
+from featureflipper import FeatureProvider
+class UserFeatures(FeatureProvider):
+    source = 'user'
+    @staticmethod
+    def features(request):
+        return [('feature1', False), ('feature2', True)]
 
 
 TODOs and BUGS
