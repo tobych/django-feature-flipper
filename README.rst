@@ -4,7 +4,7 @@ Django Feature Flipper
 
 Use this pluggable application to flip features of your Django site on
 and off, so you can deploy code and schema changes for upcoming
-features but hide them from your users until you're ready.
+features but hide the features from your users until you're ready.
 
 This is one practice commonly used in *continuous deployment*.
 
@@ -13,17 +13,35 @@ described in this often-cited blog post:
 
 http://code.flickr.com/blog/2009/12/02/flipping-out/
 
+Feature flags seems to be becoming the more commonly used phrase.
+
 django-feature-flipper is in part inspired by that post, along with
 some of the other feature flippers available, including:
 
 - https://github.com/qype/feature_flipper (for Rails, by Florian Munz at Qype)
 - https://github.com/grillpanda/dolphin (for Rails, by Matt Johnson)
+- http://dhorrigan.com/turnstiles/ (for CodeIgniter, Dan Horrigan)
+- https://dev.launchpad.net/LEP/FeatureFlags (for Canonical's Launchpad)
 
-More on feature flippers:
+The following post is an interview with Flickr's John Allspaw, author
+of "The Art of Capacity Planning: Scaling Web Resources."
+
+- http://highscalability.com/blog/2009/6/29/how-to-succeed-at-capacity-planning-without-really-trying-an.html
+
+Includes this quote, which speaks to feature flags being used to
+**disable** features to help "panic gracefully.": Of course it's
+easier to do those things when you have easy config flags to turn
+things on or off, and a list to run through of what things are
+acceptable to serve stale and static. We currently have about 195
+'features' we can turn off at Flickr in dire circumstances. And we've
+used those flags when we needed to.
+
+More on feature flags/flippers:
 
 - http://old.nabble.com/Feature-Flipper-to30400696.html 
 - http://www.alandelevie.com/2010/05/19/feature-flippers-with-rails/
 - http://engineering.qype.com/2010/06/03/how-we-work-flipping-features/ (also Florian Munz)
+- http://www.reddit.com/r/programming/comments/aehta/flickr_dont_branch/
 
 Continuous deployment:
 
