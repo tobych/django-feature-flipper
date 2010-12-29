@@ -210,6 +210,8 @@ final status of the feature:
 ``source('myfeature)`` will return another value if a featureflipper
 plugin is being used (see below).
 
+``features`` and ``source`` are also available. They are demonstrated in the example application.
+
 
 Features file
 =============

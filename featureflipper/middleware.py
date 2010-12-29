@@ -92,20 +92,20 @@ class FeatureDict(dict):
 class FeaturesPanel():
 
     def __init__(self):
-        self._features = {}
-        self._sources = []
+        self.features = {}
+        self.sources = []
 
     def add(self, source, features):
-        self._sources.append((source, features))
+        self.sources.append((source, features))
         for (feature, enabled) in features:
-            self._features[feature] = {'enabled': enabled, 'source': source}
+            self.features[feature] = {'enabled': enabled, 'source': source}
 
     def enabled(self, name):
-        return self._features[name]['enabled']
+        return self.features[name]['enabled']
 
     def source(self, name):
-        return self._features[name]['source']
+        return self.features[name]['source']
 
     def states(self):
         # Returns a dictionary, mapping each feature name to its (final) state.
-        return dict([(x, y['enabled']) for x, y in self._features.items()])
+        return dict([(x, y['enabled']) for x, y in self.features.items()])

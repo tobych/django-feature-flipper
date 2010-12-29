@@ -12,11 +12,16 @@ from featureflipper.signals import feature_defaulted
 
 def my_callback(sender, **kwargs):
         print "Feature '%s' defaulted!" % kwargs['feature']
-feature_defaulted.connect(my_callback)
+
+# Uncomment the following line to enable this:
+# feature_defaulted.connect(my_callback)
+
 
 def index(request):
-    message = "search=%s, profile=%s, unknown=%s" % \
-	(request.features['search'], request.features['profile'],
-         request.features['unknown'])
-    return render_to_response('featureflipper_example/index.html', {'message': message},
+    # We'll include all the features, just so we can show all the details in the page
+    feature_list = Feature.objects.all()
+    # Below, we'll also include the features_panel in the context.
+    # 'features' will already be added to the context by the middleware.
+    return render_to_response('featureflipper_example/index.html',
+        {'features_panel': request.features_panel, 'feature_list': feature_list},
         context_instance=RequestContext(request))
