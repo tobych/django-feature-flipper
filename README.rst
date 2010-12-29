@@ -2,18 +2,18 @@
 Django Feature Flipper
 ======================
 
-Use this pluggable application to flip features of your Django site on
-and off, so you can deploy code and schema changes for upcoming
+django-feature-flipper allows you to flip features of your Django site
+on and off, so you can deploy code and schema changes for upcoming
 features but hide the features from your users until you're ready.
 
-This is one practice commonly used in *continuous deployment*.
+This practice is commonly used in continuous deployment.
 
 The term "feature flipper" seems to have come from Flickr, as
 described in this often-cited blog post:
 
 http://code.flickr.com/blog/2009/12/02/flipping-out/
 
-Feature flags seems to be becoming the more commonly used phrase.
+Feature flags or switches are becoming more commonly used, it seems.
 
 django-feature-flipper is in part inspired by that post, along with
 some of the other feature flippers available, including:
@@ -23,18 +23,27 @@ some of the other feature flippers available, including:
 - http://dhorrigan.com/turnstiles/ (for CodeIgniter, Dan Horrigan)
 - https://dev.launchpad.net/LEP/FeatureFlags (for Canonical's Launchpad)
 
+A few days after I first committed django-feature-flipper to github,
+David Cramer at Disqus has released the "gargoyle" plugin for Django,
+that offers overlapping functionality. That plugin requires "Nexus",
+their Django front-end admin replacement.
+
+- http://justcramer.com/2010/12/21/feature-switches-in-django-with-gargoyle/
+- https://github.com/disqus/gargoyle
+
 The following post is an interview with Flickr's John Allspaw, author
 of "The Art of Capacity Planning: Scaling Web Resources."
 
 - http://highscalability.com/blog/2009/6/29/how-to-succeed-at-capacity-planning-without-really-trying-an.html
 
-Includes this quote, which speaks to feature flags being used to
-**disable** features to help "panic gracefully.": Of course it's
-easier to do those things when you have easy config flags to turn
-things on or off, and a list to run through of what things are
-acceptable to serve stale and static. We currently have about 195
-'features' we can turn off at Flickr in dire circumstances. And we've
-used those flags when we needed to.
+Includes this quote, which covers feature flags being used to
+**disable** features to help "panic gracefully.":
+
+"Of course it's easier to do those things when you have easy config
+flags to turn things on or off, and a list to run through of what
+things are acceptable to serve stale and static. We currently have
+about 195 'features' we can turn off at Flickr in dire
+circumstances. And we've used those flags when we needed to."
 
 More on feature flags/flippers:
 
@@ -338,3 +347,4 @@ TODOs and BUGS
 ==============
 
 See: https://github.com/tobych/django-feature-flipper/issues
+
