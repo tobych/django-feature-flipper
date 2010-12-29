@@ -26,7 +26,7 @@ class FeaturesMiddleware(object):
             panel.add(plugin.source, list(plugin.features(request)))
 
         if getattr(settings, 'FEATURE_FLIPPER_ANONYMOUS_URL_FLIPPING', False) or \
-                request.user.has_perm('can_flip_with_url'):
+                request.user.has_perm('featureflipper.can_flip_with_url'):
             if 'session_clear_features' in request.GET:
                 self.clear_features_from_session(request.session)
             for feature in dict(self.session_features_from_url(request)):

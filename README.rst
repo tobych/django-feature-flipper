@@ -2,11 +2,14 @@
 Django Feature Flipper
 ======================
 
-django-feature-flipper allows you to flip features of your Django site
-on and off, so you can deploy code and schema changes for upcoming
-features but hide the features from your users until you're ready.
+django-feature-flipper helps flip features of your Django site on and
+off, in the database or per request or session, using URL parameters.
 
-This practice is commonly used in continuous deployment.
+THE SOFTWARE IS ALPHA. THE API IS CHANGING AND THERE ARE NO UNIT TESTS.
+
+This will help you can deploy code and schema changes for upcoming
+features but hide the features from your users until you're
+ready. This practice is commonly used in continuous deployment.
 
 The term "feature flipper" seems to have come from Flickr, as
 described in this often-cited blog post:
