@@ -335,16 +335,17 @@ tuples. The first member is the name of the feature, and the second
 True if the feature is enabled, and False otherwise. The features
 returned need not be defined in a Feature instance in the database.
 
-from featureflipper import FeatureProvider
-class UserFeatures(FeatureProvider):
+For example::
+
+  from featureflipper import FeatureProvider
+  class UserFeatures(FeatureProvider):
     source = 'user'
     @staticmethod
     def features(request):
-        return [('feature1', False), ('feature2', True)]
+      return [('feature1', False), ('feature2', True)]
 
 
 TODOs and BUGS
 ==============
 
 See: https://github.com/tobych/django-feature-flipper/issues
-
