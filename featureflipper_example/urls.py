@@ -6,5 +6,5 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
-    (r'^$', 'example.views.index'),
+    (r'^$', 'featureflipper_example.views.index'),
 )

@@ -16,7 +16,7 @@ feature_defaulted.connect(my_callback)
 
 def index(request):
     message = "search=%s, profile=%s, unknown=%s" % \
-        (request.features['search'], request.features['profile'],
+	(request.features['search'], request.features['profile'],
          request.features['unknown'])
-    return render_to_response('index.html', {'message': message},
+    return render_to_response('featureflipper_example/index.html', {'message': message},
         context_instance=RequestContext(request))

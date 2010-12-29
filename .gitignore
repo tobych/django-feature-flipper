@@ -1,5 +1,5 @@
 *.pyc
-dev.db
+*.db
 local_settings.py
 media/ugc
 docs/_build/

@@ -73,13 +73,13 @@ MIDDLEWARE_CLASSES = (
     'featureflipper.middleware.FeaturesMiddleware',
 )
 
-ROOT_URLCONF = 'example.urls'
+ROOT_URLCONF = 'featureflipper_example.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.abspath(os.path.dirname(__file__)) + "/templates/example/",
+    os.path.abspath(os.path.dirname(__file__)) + "/templates/",
 )
 
 FEATURE_FLIPPER_FEATURES_FILE = os.path.abspath(os.path.dirname(__file__)) + "/features.json"

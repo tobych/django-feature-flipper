@@ -113,7 +113,7 @@ off using URL parameters.
 
 To enable a feature for the current request::
 
-  /mypage/?enabled_myfeature
+  /mypage/?enable_myfeature
 
 To enable a feature for this request and the rest of a session::
 
